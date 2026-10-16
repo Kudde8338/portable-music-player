@@ -23,7 +23,7 @@
 #define SD_FREQ     25000000      // try 4000000, 10000000, 20000000, 25000000
 #define TEST_FILE   "/Nick-Drake-River-Man-Take-1-4th-January-1969.flac"   // change to your own file, e.g. "/song.mp3"
 #define CHUNK_SIZE  4096
-#define READ_RUNS   10
+#define READ_RUNS   3
 
 Adafruit_SSD1306 oled(SCREEN_W, SCREEN_H, &Wire, -1);
 
