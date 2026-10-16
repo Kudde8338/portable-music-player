@@ -35,7 +35,3 @@ A compact, self-contained MP3 player built around an **ESP32-C6**.
 2. **Install and set up libraries** – add `lvgl` through the Arduino Library Manager and follow the proper steps to get it set up. Follow the guide [here](https://lvgl.io/docs/open/8.3/get-started/quick-overview.html#add-lvgl-into-your-project).
 3. **Flash** – open the project in the Arduino IDE (or PlatformIO), select the *ESP32C6 Dev Module* board, and upload.
 4. **Play** – insert an SD card formatted as **FAT32** with MP3 files in the root folder.
-
-## License
-
-*(Add your chosen license, e.g. MIT, GPL-3.0)*
