@@ -13,6 +13,7 @@
 #define SD_MOSI    18
 #define SD_MISO    20
 #define SD_CS      23
+#define SD_CD      10
 
 // ---------- Display ----------
 #define SCREEN_W   128
@@ -115,13 +116,6 @@ float readBenchmark() {
 void runSdTest() {
   showInfo("SD: mounting...");
 
-  SPI.begin(SD_SCK, SD_MISO, SD_MOSI, SD_CS);
-  if (!SD.begin(SD_CS, SPI, SD_FREQ)) {
-    Serial.println("Card mount failed");
-    showInfo("SD: mount failed");
-    return;
-  }
-
   uint64_t sizeMB = SD.cardSize() / (1024 * 1024);
   Serial.printf("Card size: %llu MB, SPI clock: %d MHz\n", sizeMB, SD_FREQ / 1000000);
 
@@ -145,6 +139,31 @@ void runSdTest() {
   } else {
     showInfo("SD %lluMB @%dMHz\nRead:  %.2f MB/s\n(%.1f Mbit/s)",
              sizeMB, SD_FREQ / 1000000, readMBps, readMBps * 8.388608f);
+  }
+}
+
+// Polls the card-detect switch, debounces it, and mounts/unmounts on change
+void checkCard() {
+  static bool lastRaw = false;      // last raw reading
+  static bool present = false;      // debounced state
+  static uint32_t changedAt = 0;
+
+  bool raw = (digitalRead(SD_CD) == LOW);   // LOW = card inserted
+  if (raw != lastRaw) {
+    lastRaw = raw;
+    changedAt = millis();
+  }
+
+  if (raw != present && millis() - changedAt > 50) {
+    present = raw;
+    if (present) {
+      Serial.println("Card inserted");
+      runSdTest();
+    } else {
+      Serial.println("Card removed");
+      SD.end();
+      showInfo("Card removed\nInsert SD card");
+    }
   }
 }
 
@@ -190,11 +209,13 @@ void setup() {
 
   lv_timer_create(updateUptimeCb, 1000, NULL);
 
-  // SD benchmark (results shown on screen and Serial)
-  runSdTest();
+  pinMode(SD_CD, INPUT_PULLUP);
+  SPI.begin(SD_SCK, SD_MISO, SD_MOSI, SD_CS);
+  showInfo("Insert SD card");
 }
 
 void loop() {
+  checkCard();
   lv_timer_handler();
   delay(5);
 }
