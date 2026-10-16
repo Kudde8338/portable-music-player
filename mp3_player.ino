@@ -13,7 +13,6 @@
 #define SD_MOSI    18
 #define SD_MISO    20
 #define SD_CS      23
-#define SD_CD      10
 
 // ---------- Display ----------
 #define SCREEN_W   128
@@ -22,7 +21,7 @@
 
 // ---------- SD benchmark ----------
 #define SD_FREQ     25000000      // try 4000000, 10000000, 20000000, 25000000
-#define TEST_FILE   "/001.mp3"   // change to your own file, e.g. "/song.mp3"
+#define TEST_FILE   "/Nick-Drake-River-Man-Take-1-4th-January-1969.flac"   // change to your own file, e.g. "/song.mp3"
 #define CHUNK_SIZE  4096
 #define READ_RUNS   10
 
@@ -116,6 +115,13 @@ float readBenchmark() {
 void runSdTest() {
   showInfo("SD: mounting...");
 
+  SPI.begin(SD_SCK, SD_MISO, SD_MOSI, SD_CS);
+  if (!SD.begin(SD_CS, SPI, SD_FREQ)) {
+    Serial.println("Card mount failed");
+    showInfo("SD: mount failed");
+    return;
+  }
+
   uint64_t sizeMB = SD.cardSize() / (1024 * 1024);
   Serial.printf("Card size: %llu MB, SPI clock: %d MHz\n", sizeMB, SD_FREQ / 1000000);
 
@@ -139,31 +145,6 @@ void runSdTest() {
   } else {
     showInfo("SD %lluMB @%dMHz\nRead:  %.2f MB/s\n(%.1f Mbit/s)",
              sizeMB, SD_FREQ / 1000000, readMBps, readMBps * 8.388608f);
-  }
-}
-
-// Polls the card-detect switch, debounces it, and mounts/unmounts on change
-void checkCard() {
-  static bool lastRaw = false;      // last raw reading
-  static bool present = false;      // debounced state
-  static uint32_t changedAt = 0;
-
-  bool raw = (digitalRead(SD_CD) == LOW);   // LOW = card inserted
-  if (raw != lastRaw) {
-    lastRaw = raw;
-    changedAt = millis();
-  }
-
-  if (raw != present && millis() - changedAt > 50) {
-    present = raw;
-    if (present) {
-      Serial.println("Card inserted");
-      runSdTest();
-    } else {
-      Serial.println("Card removed");
-      SD.end();
-      showInfo("Card removed\nInsert SD card");
-    }
   }
 }
 
@@ -209,13 +190,11 @@ void setup() {
 
   lv_timer_create(updateUptimeCb, 1000, NULL);
 
-  pinMode(SD_CD, INPUT_PULLUP);
-  SPI.begin(SD_SCK, SD_MISO, SD_MOSI, SD_CS);
-  showInfo("Insert SD card");
+  // SD benchmark (results shown on screen and Serial)
+  runSdTest();
 }
 
 void loop() {
-  checkCard();
   lv_timer_handler();
   delay(5);
 }
