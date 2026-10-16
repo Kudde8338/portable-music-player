@@ -33,14 +33,6 @@ A compact, self-contained MP3 player built around the **ESP32-C6** microcontroll
 3. **Flash** – open the project in the Arduino IDE (or PlatformIO), select the *ESP32C6 Dev Module* board, and upload.
 4. **Play** – insert an SD card formatted as **FAT32** with MP3 files in the root folder.
 
-## Controls
-
-| Action | Trigger |
-|--------|---------|
-| Play / Pause | *(define button or serial command)* |
-| Next / Prev track | *(define)* |
-| Volume up / down | *(define)* |
-
 ## License
 
 *(Add your chosen license, e.g. MIT, GPL-3.0)*
