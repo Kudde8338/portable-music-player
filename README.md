@@ -1,20 +1,20 @@
 # ESP32-C6 MP3 Player
 
-A compact, self-contained MP3 player built around the **ESP32-C6** microcontroller and the DFRobot DFPlayer Mini (MP3-TF-16P). 
+A compact, self-contained MP3 player built around an **ESP32-C6**.
 
 ## Hardware
 
 | Component | Notes |
 |-----------|-------|
 | ESP32-C6-DEV-KIT-NX | Pre-soldered headers included |
-| DFRobot DFPlayer Mini (MP3-TF-16P) | SD-card module for audio decoding |
+| Adafruit Micro SD SPI or SDIO Card Breakout Board - 3V ONLY! | SD-card module for file storage. Supports up to 32 gb. |
 | 0.96" OLED Display | 128 × 64 px, I²C interface, white-on-black |
 
 ## Software Dependencies
 
 | Library | Author | Purpose |
 |---------|--------|---------|
-| `DFRobotDFPlayerMini` | DFRobot | Serial interface to the DFPlayer Mini board |
+| `lvgl` | kisvegabor | Full-featured gui library for the 0.96" OLED Display |
 
 ## Pin Map 
 
@@ -22,9 +22,10 @@ A compact, self-contained MP3 player built around the **ESP32-C6** microcontroll
 |----------|------|
 | I²C SDA (OLED) | — |
 | I²C SCL (OLED) | — |
-| TX → DFPlayer | — |
-| RX ← DFPlayer | — |
-| SD-card detect | — |
+| CLK (MicroSD Breakout Board) | GPIO19 |
+| CMD (MicroSD Breakout Board) | GPIO18 |
+| DATA0 (MicroSD Breakout Board) |
+| DATA3 (MicroSD Breakout Board) |
 
 ## Getting Started
 
