@@ -31,7 +31,7 @@ A compact, self-contained MP3 player built around an **ESP32-C6**.
 
 ## Getting Started
 
-1. **Assemble** – connect the DFPlayer Mini to the ESP32-C6 UART pins and the OLED via I²C.
+1. **Assemble** – connect the components as stated in the [Pin Map](#pin-map).
 2. **Install and set up libraries** – add `lvgl` through the Arduino Library Manager and follow the proper steps to get it set up. Follow the guide [here](https://lvgl.io/docs/open/8.3/get-started/quick-overview.html#add-lvgl-into-your-project).
 3. **Flash** – open the project in the Arduino IDE (or PlatformIO), select the *ESP32C6 Dev Module* board, and upload.
 4. **Play** – insert an SD card formatted as **FAT32** with MP3 files in the root folder.
