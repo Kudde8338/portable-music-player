@@ -1,4 +1,4 @@
-# ESP32-C6 MP3 Player
+# Garn47s portable music player
 
 A compact, self-contained MP3 player built around an **ESP32-C6**.
 

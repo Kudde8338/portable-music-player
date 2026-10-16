@@ -1,6 +1,4 @@
-MIT-style Non-Commercial License (with attribution)
-
-Copyright (c) 2026, [Your Name]
+Copyright (c) 2026, TotallyGarn47 (a.k.a a.k.a ImTotallyGarn47)
 
 This work is licensed for **non-commercial use** under the following terms:
 
@@ -28,7 +26,7 @@ This work is licensed for **non-commercial use** under the following terms:
    If you redistribute this software (including in modified form),
    you must include the following notice:
 
-     "Based on [Project Name] by [Your Name].
+     "Based on Garn47s portable music player by TotallyGarn47 (a.k.a ImTotallyGarn47).
       Third-party components:
         – DFRobotDFPlayerMini library by DFRobot [www.dfrobot.com]"
 
