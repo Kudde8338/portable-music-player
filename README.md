@@ -1,6 +1,6 @@
 # ESP32-C6 MP3 Player
 
-A compact, self-contained MP3 player built around the **ESP32-C6** microcontroller. It reads audio tracks from an SD card, controls playback via a DFRobot DFPlayer Mini module, and displays track info on a small OLED screen.
+A compact, self-contained MP3 player built around the **ESP32-C6** microcontroller and the DFRobot DFPlayer Mini (MP3-TF-16P). 
 
 ## Hardware
 
@@ -16,7 +16,7 @@ A compact, self-contained MP3 player built around the **ESP32-C6** microcontroll
 |---------|--------|---------|
 | `DFRobotDFPlayerMini` | DFRobot | Serial interface to the DFPlayer Mini board |
 
-## Pin Map *(fill in after wiring)*
+## Pin Map 
 
 | Function | GPIO |
 |----------|------|
