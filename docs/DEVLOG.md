@@ -1,4 +1,5 @@
-## 10/16/2026 and 10/17/2026
+### __Day 1__
+__10/16/2026 and 10/17/2026__
 
 Starting the log today! Switched up the plan/system for what i am building. The previous plan was to use a DFplayer mini, but upon discovering the horrid audio quality I've decided to eventually purchase a dedicated DAC and work off of reading and processing the files on the SD card through a dedicated reader. 
 
@@ -12,3 +13,7 @@ Anyways, everything else I did:
 * Set up the lvgl library and started testing the OLED screen
 * Desoldered an old component off of a 3.5 mm aux port and soldered on new pins. 
 * Explored native audio playback for the esp32-c6
+
+***
+### __Day 2__
+__10/xx/2026__
