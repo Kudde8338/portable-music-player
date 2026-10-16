@@ -1,16 +1,46 @@
-# The absolutely coolest mp3 player ever!
+# ESP32-C6 MP3 Player
 
-Write a short description here
+A compact, self-contained MP3 player built around the **ESP32-C6** microcontroller. It reads audio tracks from an SD card, controls playback via a DFRobot DFPlayer Mini module, and displays track info on a small OLED screen.
 
-## How i did it 
+## Hardware
 
-As of this moment a DFPlayer mini is used to convert the MP3 (or similar files) directly to an audio output. This method, however, isn't all that efficient at getting the most out of the audio quality. The alternative (which is more favourable, but harder and more expensive to pull off) would be to use a microSD breakout card and convert the MP3 files (or similar) to audio signals directly on the ESP, and then running this through a DAC to get an audio output. Running this method without a DAC would mean only having 8-bit audio, compared to the 24-bit (and sampling rate of (kHz): 8/11.025/12/16/22.05/24/32/44.1/48).
+| Component | Notes |
+|-----------|-------|
+| ESP32-C6-DEV-KIT-NX | Pre-soldered headers included |
+| DFRobot DFPlayer Mini (MP3-TF-16P) | SD-card module for audio decoding |
+| 0.96" OLED Display | 128 × 64 px, I²C interface, white-on-black |
 
-### Components
-* ESP32-C6-DEV-KIT-NX (With presoldered headers)
-* MP3-TF-16P SDcard module
-* 0.96" OLED 128x64px I2C white
+## Software Dependencies
 
-### Libraries
-The program makes use of the following libraries:
-* DFRobotDFPlayerMini by *DFRobot*
+| Library | Author | Purpose |
+|---------|--------|---------|
+| `DFRobotDFPlayerMini` | DFRobot | Serial interface to the DFPlayer Mini board |
+
+## Pin Map *(fill in after wiring)*
+
+| Function | GPIO |
+|----------|------|
+| I²C SDA (OLED) | — |
+| I²C SCL (OLED) | — |
+| TX → DFPlayer | — |
+| RX ← DFPlayer | — |
+| SD-card detect | — |
+
+## Getting Started
+
+1. **Assemble** – connect the DFPlayer Mini to the ESP32-C6 UART pins and the OLED via I²C.
+2. **Install libraries** – add `DFRobotDFPlayerMini` through the Arduino Library Manager.
+3. **Flash** – open the project in the Arduino IDE (or PlatformIO), select the *ESP32C6 Dev Module* board, and upload.
+4. **Play** – insert an SD card formatted as **FAT32** with MP3 files in the root folder.
+
+## Controls
+
+| Action | Trigger |
+|--------|---------|
+| Play / Pause | *(define button or serial command)* |
+| Next / Prev track | *(define)* |
+| Volume up / down | *(define)* |
+
+## License
+
+*(Add your chosen license, e.g. MIT, GPL-3.0)*
