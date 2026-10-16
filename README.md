@@ -1,4 +1,4 @@
-# Garn47s portable music player
+# Garn47s portable music player #### by TotallyGarn47
 
 A compact, self-contained MP3 player built around an **ESP32-C6**.
 
