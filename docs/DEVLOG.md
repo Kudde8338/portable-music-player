@@ -19,5 +19,13 @@ Anyways, everything else I did:
 __10/17/2026__
 
 Had a quick look at options for a DAC. The current contenders are:
-* Adafruit PCM5102 I2S DAC with Line Level Output - 112dB SNR (slightly cheaper, but less functionality, e.g. no sterio output)
-* Adafruit PCM5122 I2S DAC with Line Level Output - HW, I2C or SPI (slightly more expensive, but with the most functionality)
+
+| Component | Image | Functionality |
+|-----------|-------|---------------|
+| Adafruit PCM5102 I2S DAC with Line Level Output - 112dB SNR | ![Adafruit PCM5102 I2S DAC with Line Level Output.jpg](/img/Adafruit%20PCM5102%20I2S%20DAC%20with%20Line%20Level%20Output%20-%20112dB%20SNR%20.png) | Slightly less functionality compared to the PCM5122 based component, missing features such as sterio output and eq-customization. Is howerver more available and cheaper |
+| Adafruit PCM5122 I2S DAC with Line Level Output - HW, I2C or SPI | ![Adafruit PCM5122 I2S DAC with Line Level Output - HW, I2C or SPI.jpg](/img/Adafruit%20PCM5122%20I2S%20DAC%20with%20Line%20Level%20Output%20-%20HW,%20I2C%20or%20SPI%20.jpg) | Comes in with quite a lot more funcitonality compared to the PCM502 based component. Key features include sterio audio, eq-customization and dynamic range control. |
+
+Both components do however share some quality-of-life features, such as automatic file format detection and decoding, meaning that no actual decoding is necessary to be done directly on the esp, which is a nice thing to see looking at how it could have been a concern with more compressed file formats. 
+
+As of today, this is what the player looks like:
+![player status 10-17-2026.png](/img/player%20status%2010-17-2026.png)
