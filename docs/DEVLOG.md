@@ -16,4 +16,8 @@ Anyways, everything else I did:
 
 ***
 ### __Day 2__
-__10/xx/2026__
+__10/17/2026__
+
+Had a quick look at options for a DAC. The current contenders are:
+* Adafruit PCM5102 I2S DAC with Line Level Output - 112dB SNR (slightly cheaper, but less functionality, e.g. no sterio output)
+* Adafruit PCM5122 I2S DAC with Line Level Output - HW, I2C or SPI (slightly more expensive, but with the most functionality)
