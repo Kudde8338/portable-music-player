@@ -32,23 +32,27 @@ File audioFile;
 bool playing = false;
 
 class modes {
-  public: 
-    void play_all_straight(String path) {
 
-    }
+  // Generally how the class system funcitons
+  // A function is called, in "play_all" functions the work looks as follows:
+  //        - A path is given to the specified playlist (csv) from which the
+  //        player is to play from
+  //        - The program will decode the file listed in the specified path in
+  //        the csv
+  //
+  // In "play_one" functions the work looks as follows:
+  //        - Get the immediate path of the audio file, no csv instructions
+  //        - The program will decode the directly specified file under that
+  //        path
 
-    void play_all_shuffle(String path) {
+public:
+  void play_all_straight(String path) {}
 
-    }
+  void play_all_shuffle(String path) {}
 
-    void play_one_once(String path) {
+  void play_one_once(String path) {}
 
-    }
-
-    void play_one_repeat(String path, const int times) 
-    {
-
-    }
+  void play_one_repeat(String path, const int times) {}
 };
 
 // -------- Filter out unsupported file formats --------
@@ -57,13 +61,12 @@ bool hasExt(String name, const char *ext) {
   return name.endsWith(ext);
 }
 bool isAudioFile(const String &name) {
-  if (name.startsWith(".") || name.startsWith("_")) return false;
+  if (name.startsWith(".") || name.startsWith("_"))
+    return false;
   return hasExt(name, ".mp3") || hasExt(name, ".wav") || hasExt(name, ".flac");
 }
 
-
-
-// -------- Initialize components  -------- 
+// -------- Initialize components  --------
 void Initialize_SPI() {
   SPI.begin(SD_CLK, SD_SO, SD_SI, SD_CS);
   if (!SD.begin(SD_CS)) {
@@ -87,15 +90,12 @@ void Initialize_I2S() {
   }
 }
 
-
 // -------- On startup --------
 void startup() {
   // Set the current mode of the player
-  // Find an appropriate file to play 
+  // Find an appropriate file to play
   // Play the prediscribed file, based on the instructions written in the mode
 }
-
-
 
 void Setup(void) {
   Serial.begin(115200);

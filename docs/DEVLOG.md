@@ -30,3 +30,19 @@ Both components do however share some quality-of-life features, such as automati
 As of today, this is what the player looks like:
 ![player status 10-17-2026.png](/docs/img/player%20status%2010-17-2026.png)
 No actual code has been written for the player. However, example code is flashed to the device to test the functionality of the components. 
+
+***
+### __Day 3__ 
+__10/28/2026__ 
+
+I have successfully connected the DAC and confirmed it is operational. The audio quality is excellent.
+
+I went with the PCM5122-based board (as noted in the previous log). The physical layout of the project has changed somewhat as a result. That said, I have not yet had the opportunity to organize the cabling, and I anticipate deferring that work for the time being, as I may still need to revise the DAC wiring.
+
+![player status 10-28-2026.png](/docs/img/player%20status%2010-28-2026.png)
+
+Additionally, I have updated the code to accommodate the new component. My initial plan was to use the [ESP32-audioI2S library by schreibfaul1](https://github.com/schreibfaul1/ESP32-audioI2S.git); however, it proved to have design limitations that affected performance, and often prevented the code from being flashed to the ESP. Therefore I ultimately adopted an [alternative library from UNIT Electronics](https://github.com/UNIT-Electronics-MX/unit_devlab_fork_arduino_audio_tools.git), along with its associated dependencies, which delivered significantly better results.
+
+The code is not yet fully complete, as I have intentionally left a few functions and classes unimplemented for a future update.
+
+A note on the rewiring: In regards to this, my plan is to include I2C or SPI interfacing with the two MODE pins for volume control / software mute / EQ / filters.
