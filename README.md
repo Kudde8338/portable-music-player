@@ -6,7 +6,7 @@ A compact, self-contained MP3 player built around an **ESP32-C6**.
 
 | Component | Notes |
 |-----------|-------|
-| ESP32-C6-DEV-KIT-NX | Pre-soldered headers included |
+| ESP32-C6-DEV-KIT-NX | Main computer |
 | Adafruit MicroSD SPI or SDIO Card Breakout Board | SD-card module for file storage. Supports up to 32 GB. |
 | 0.96" OLED Display | 128 × 64 px, I²C interface, white-on-black |
 | Adafruit PCM5122 I2S DAC with Line Level Output - HW, I2C or SPI | Digital to audio conversion and output. Everything is handled directly on the chip |
