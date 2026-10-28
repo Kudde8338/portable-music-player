@@ -47,6 +47,3 @@ This project does not provide or link to any music, and it does **not** condone 
 Custom Non-Commercial License – see [LICENSE](/LICENSE.md)
 
 **By opening a PR you agree to the terms in LICENSE §6**
-
-
-# THIS IS A TEST!
