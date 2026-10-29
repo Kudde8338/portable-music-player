@@ -2,6 +2,8 @@
 #include "AudioTools/AudioCodecs/CodecFLACFoxen.h" // FLAC codec (Foxen)
 #include "AudioTools/AudioCodecs/CodecMP3Helix.h"  // MP3 codec
 #include "AudioTools/AudioCodecs/CodecWAV.h"       // WAV codec
+#include "AudioTools/AudioCodecs/MultiDecoder.h"   // picks the decoder per file
+#include "AudioTools/Disk/AudioSourceSD.h"         // playlist from the SD card
 #include <FS.h>
 #include <SD.h>
 #include <SPI.h>
@@ -16,54 +18,27 @@
 #define DAC_WSEL 23
 #define DAC_DIN 22
 #define DAC_BCK 21
-#define DAC_MCK 20
+#define DAC_MCK -1
 
 I2SStream i2s;         // final output to the DAC
 MP3DecoderHelix mp3;   // MP3 decoder
 WAVDecoder wav;        // WAV decoder
 FLACDecoderFoxen flac; // FLAC decoder
+MultiDecoder multi;    // chooses mp3/wav/flac for each file
 
-EncodedAudioStream mp3Stream(&i2s, &mp3); // file data -> decoded PCM -> I2S
-EncodedAudioStream wavStream(&i2s, &wav);
-EncodedAudioStream flacStream(&i2s, &flac);
+// All (non-hidden) files in the root folder, using the SPI bus set up below.
+// ext = "" means "don't filter by extension".
+AudioSourceSD source("/playlist1/", "", SD_CS, SPI);
 
-StreamCopy copier; // moves bytes from file to decoder
+// source -> multi decoder -> i2s (volume and fade stages are built in)
+AudioPlayer player(source, i2s, multi);
 
-File audioFile;
-bool playing = false;
+float volume = 1.0;
 
-bool hasExt(String name, const char *ext) {
-  name.toLowerCase();
-  return name.endsWith(ext);
-}
-
-bool isAudioFile(const String &name) {
-  if (name.startsWith(".") || name.startsWith("_"))
-    return false; // skip macOS junk files
-  return hasExt(name, ".flac");
-}
-
-// Returns the full path of the first MP3/WAV/FLAC in the root folder ("" if
-// none)
-String findFirstAudioFile() {
-  File root = SD.open("/");
-  if (!root)
-    return "";
-
-  String found = "";
-  while (true) {
-    File entry = root.openNextFile();
-    if (!entry)
-      break;
-    if (!entry.isDirectory() && isAudioFile(String(entry.name()))) {
-      found = String(entry.path());
-      entry.close();
-      break;
-    }
-    entry.close();
-  }
-  root.close();
-  return found;
+// Called by the player whenever it switches to a new file
+void onTrackChange(Stream *stream, void *ref) {
+  Serial.print("Playing: ");
+  Serial.println(source.toStr());
 }
 
 void setup() {
@@ -72,25 +47,10 @@ void setup() {
 
   // ---- SD card ----
   SPI.begin(SD_CLK, SD_SO, SD_SI, SD_CS);
+  // Mounted here at 40 MHz. AudioSourceSD calls SD.begin() again later, which
+  // (on the ESP32 core) should just report "already mounted".
   if (!SD.begin(SD_CS, SPI, 40000000)) {
     Serial.println("SD init failed - check wiring / card format (FAT32)");
-    while (1)
-      delay(1000);
-  }
-
-  // ---- Find a file ----
-  String path = findFirstAudioFile();
-  if (path == "") {
-    Serial.println("No MP3/WAV/FLAC files found in root folder");
-    while (1)
-      delay(1000);
-  }
-  Serial.print("Playing: ");
-  Serial.println(path);
-
-  audioFile = SD.open("/Nick-Drake-River-Man-Take-1-4th-January-1969.flac");
-  if (!audioFile) {
-    Serial.println("Could not open file");
     while (1)
       delay(1000);
   }
@@ -106,30 +66,50 @@ void setup() {
   // sample rate / channels / bits are set automatically from the file's header
   i2s.begin(cfg);
 
-  // ---- Pick decoder by extension and start the copy chain ----
-  if (hasExt(path, ".wav")) {
-    wavStream.begin();
-    copier.begin(wavStream, audioFile);
-  } else if (hasExt(path, ".flac")) {
-    flacStream.begin();
-    copier.begin(flacStream, audioFile);
-  } else {
-    mp3Stream.begin();
-    copier.begin(mp3Stream, audioFile);
+  // ---- Decoders, selected by the file's extension ----
+  multi.addDecoder(mp3, "audio/mpeg");
+  multi.addDecoder(wav, "audio/vnd.wave");
+  multi.addDecoder(flac, "audio/flac");
+
+  // ---- Player ----
+  player.setOnStreamChangeCallback(onTrackChange);
+  player.setSilenceOnInactive(
+      true);                // keep feeding zeros to the DAC while paused
+  player.setVolume(volume); // 0.0 - 1.0
+  if (!player.begin()) {    // starts with the first file on the card
+    Serial.println(
+        "Player start failed - no playable files in the root folder?");
+    while (1)
+      delay(1000);
   }
-  playing = true;
 }
 
 void loop() {
-  if (!playing)
-    return;
+  player.copy(); // does the actual playing, must be called continuously
 
-  // copy() moves one chunk from the file into the decoder; returns 0 at end of
-  // file
-  if (!copier.copy()) {
-    Serial.println("Finished");
-    audioFile.close();
-    i2s.end();
-    playing = false;
+  // Serial input commands
+  if (Serial.available()) {
+    switch (Serial.read()) {
+    case 'p':
+      player.setActive(true);
+      break; // resume
+    case 's':
+      player.setActive(false);
+      break; // pause
+    case 'n':
+      player.next();
+      break; // next track
+    case 'b':
+      player.previous();
+      break; // previous track
+    case '+':
+      volume = min(1.0f, volume + 0.1f);
+      player.setVolume(volume);
+      break;
+    case '-':
+      volume = max(0.0f, volume - 0.1f);
+      player.setVolume(volume);
+      break;
+    }
   }
 }
