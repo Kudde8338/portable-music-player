@@ -1,6 +1,6 @@
 # Garn47's Portable Music Player 
 
-A compact, self-contained MP3 player built around an **ESP32-C6**.
+A compact, self-contained MP3 player built around an **ESP32-C6** and Adafruit_PCM5122 DAC. File decoding and digital audio playback based on pschatzmann's `arduino audio tools` and the likes. 
 
 ## Hardware
 
@@ -13,21 +13,21 @@ A compact, self-contained MP3 player built around an **ESP32-C6**.
 
 ## Software Dependencies
 
-| Library | Author | Purpose |
-|---------|--------|---------|
-| `lvgl` | kisvegabor | Full-featured GUI library for the 0.96" OLED Display |
+| Library | Author | Purpose | GitHub | 
+|---------|--------|---------|--------|
+| `u8g2` | olikraus | GUI library for the OLED Display | [github.com/olikraus/u8g2.git](https://github.com/olikraus/u8g2.git) |
 | `Adafruit_BusIO` | adafruit | This is a helper library to abstract away I2C, SPI, and 'generic transport' (e.g. UART) transactions and registers. |
-| `Adafruit_PCM51xx`| adafruit | Arduino library for the Texas Instruments PCM51xx series of stereo audio DACs with I2C control interface. |
-| `arduino-audio-tools`| pschatzmann | Header-only C++ library that lets microcontroller projects (ESP32, RP2040, etc.) read, process, and play audio using simple Arduino-style streams, with built-in codecs, effects, I2S/USB/network I/O, and sound generation. | 
-| `unit_devlab_fork_arduino_libhelix` | UNIT-Electronics-MX | Arduino/CMake library wrapping lightweight Helix decoders. Includes formats such as MP3 and WAV. The library is also responsable for converting the files to raw PCM audio and stream it to I2S or a callback. |
-| `libfoxenflac` | astoeckel | FLAC (Free Lossless Audio Codec) decoder written in C99. |
+| `Adafruit_PCM51xx`| adafruit | Arduino library for the Texas Instruments PCM51xx series of stereo audio DACs with I2C control interface. | [github.com/adafruit/Adafruit_BusIO.git](https://github.com/adafruit/Adafruit_BusIO.git) |
+| `arduino-audio-tools`| pschatzmann | Header-only C++ library that lets microcontroller projects (ESP32, RP2040, etc.) read, process, and play audio using simple Arduino-style streams, with built-in codecs, effects, I2S/USB/network I/O, and sound generation. | [github.com/pschatzmann/arduino-audio-tools.git](https://github.com/pschatzmann/arduino-audio-tools.git) |
+| `unit_devlab_fork_arduino_libhelix` | UNIT-Electronics-MX | Arduino/CMake library wrapping lightweight Helix decoders. Includes formats such as MP3 and WAV. The library is also responsable for converting the files to raw PCM audio and stream it to I2S or a callback. | [github.com/UNIT-Electronics-MX/unit_devlab_fork_arduino_libhelix.git](https://github.com/UNIT-Electronics-MX/unit_devlab_fork_arduino_libhelix.git) |
+| `libfoxenflac` | astoeckel | FLAC (Free Lossless Audio Codec) decoder written in C99. | [github.com/astoeckel/libfoxenflac.git](https://github.com/astoeckel/libfoxenflac.git) |
 
 ## Pin Map 
 
 | Function | GPIO |
 |----------|------|
 | I²C SDA (OLED) | 06 |
-| I²C SCL (OLED) | 07|
+| I²C SCL (OLED) | 07 |
 | CLK (MicroSD Breakout Board) | 00 |
 | SO (MicroSD Breakout Board) | 01 |
 | SI (MicroSD Breakout Board) | 10 |
@@ -44,6 +44,6 @@ The DAC can also be pinned to the I²C SDA and SCL pins for filtering, de-emphas
 ## Getting Started
 
 1. **Assemble** – connect the components as stated in the [Pin Map](#pin-map).
-2. **Install and set up libraries** – add `lvgl` through the Arduino Library Manager and follow the proper steps to get it set up. Follow the guide [here](https://lvgl.io/docs/open/8.3/get-started/quick-overview.html#add-lvgl-into-your-project).
-3. **Flash** – open the project in the Arduino IDE (or PlatformIO), select the *ESP32C6 Dev Module* board, and upload.
+2. **Install and set up libraries** – add the pre-specified libraries. 
+3. **Flash** – open the project in the Arduino IDE (or PlatformIO), select the *ESP32C6 Dev Module* board, and upload. If you're using a different microcontroller; go through the proper channels to adjust the source code, pinouts, and flash method. 
 4. **Play** – insert an SD card formatted as **FAT32** with MP3 files in the root folder.
