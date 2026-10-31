@@ -33,7 +33,6 @@ A compact, self-contained MP3 player built around an **ESP32-C6** and Adafruit_P
 | WSEL (PCM5122 I2S DAC) | 23 |
 | DIN (PCM5122 I2S DAC) | 22 |
 | BCK (PCM5122 I2S DAC) | 21 |
-| MCK (PCM5122 I2S DAC) | 20 (technically left unused) |
 
 The DAC can also be pinned to the I²C SDA and SCL pins for filtering, de-emphasis, mute, as well as gain changes. To put into use, include the Adafruit_BusIO and Adafruit_PCM51xx libraries. See documentation [here](https://learn.adafruit.com/adafruit-pcm5122-i2s-dac/overview).
 
