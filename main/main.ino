@@ -104,7 +104,7 @@ void setup() {
 
   // ---- SD card ----
   SPI.begin(SD_CLK, SD_SO, SD_SI, SD_CS);
-  
+
   if (!SD.begin(SD_CS, SPI, 40000000)) {   // Mounted here at 40 MHz.
     Serial.println("SD init failed - check wiring / card format (FAT32)");
     while (1)
@@ -137,7 +137,6 @@ void setup() {
       delay(1000);
   }
 }
-
 
 void loop() {
   player.copy(); // does the actual playing, must be called continuously

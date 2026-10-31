@@ -16,8 +16,6 @@ A compact, self-contained MP3 player built around an **ESP32-C6** and Adafruit_P
 | Library | Author | Purpose | GitHub | 
 |---------|--------|---------|--------|
 | u8g2 | olikraus | GUI library for the OLED Display | [github.com/olikraus/u8g2.git](https://github.com/olikraus/u8g2.git) |
-| Adafruit_BusIO | adafruit | This is a helper library to abstract away I2C, SPI, and 'generic transport' (e.g. UART) transactions and registers. |
-| Adafruit_PCM51xx | adafruit | Arduino library for the Texas Instruments PCM51xx series of stereo audio DACs with I2C control interface. | [github.com/adafruit/Adafruit_BusIO.git](https://github.com/adafruit/Adafruit_BusIO.git) |
 | arduino audio tools| pschatzmann | Header-only C++ library that lets microcontroller projects (ESP32, RP2040, etc.) read, process, and play audio using simple Arduino-style streams, with built-in codecs, effects, I2S/USB/network I/O, and sound generation. | [github.com/pschatzmann/arduino-audio-tools.git](https://github.com/pschatzmann/arduino-audio-tools.git) |
 | unit devlab fork arduino libhelix | UNIT-Electronics-MX | Arduino/CMake library wrapping lightweight Helix decoders. Includes formats such as MP3 and WAV. The library is also responsable for converting the files to raw PCM audio and stream it to I2S or a callback. | [github.com/UNIT-Electronics-MX/unit_devlab_fork_arduino_libhelix.git](https://github.com/UNIT-Electronics-MX/unit_devlab_fork_arduino_libhelix.git) |
 | libfoxenflac | astoeckel | FLAC (Free Lossless Audio Codec) decoder written in C99. | [github.com/astoeckel/libfoxenflac.git](https://github.com/astoeckel/libfoxenflac.git) |
@@ -37,7 +35,7 @@ A compact, self-contained MP3 player built around an **ESP32-C6** and Adafruit_P
 | BCK (PCM5122 I2S DAC) | 21 |
 | MCK (PCM5122 I2S DAC) | 20 (technically left unused) |
 
-The DAC can also be pinned to the I²C SDA and SCL pins for filtering, de-emphasis, mute, as well as gain changes. See documentation [here](https://learn.adafruit.com/adafruit-pcm5122-i2s-dac/overview).
+The DAC can also be pinned to the I²C SDA and SCL pins for filtering, de-emphasis, mute, as well as gain changes. To put into use, include the Adafruit_BusIO and Adafruit_PCM51xx libraries. See documentation [here](https://learn.adafruit.com/adafruit-pcm5122-i2s-dac/overview).
 
 **NOTE:** Both the OLED and the MicroSD Breakout Board use 3.3V power input! This is especially important since both components **CAN** and **WILL** break if a higher voltage is used!
 
