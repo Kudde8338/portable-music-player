@@ -40,7 +40,7 @@ FLACDecoderFoxen flac; // FLAC decoder
 MultiDecoder multi;    // chooses mp3/wav/flac for each file
 
 // -------- Player variable setup --------
-// All (non-hidden) files in the root folder, using SPI
+// All (non-hidden) files in the specified folder, using SPI
 // ext = "" means "don't filter by extension".
 AudioSourceSD source("/Speciella vibbar", "", SD_CS, SPI);
 
@@ -114,7 +114,7 @@ void setup() {
   // ---- I2S output ----
   auto cfg = i2s.defaultConfig(TX_MODE);
   cfg.buffer_count = 8;
-  cfg.buffer_size = 1024;
+  cfg.buffer_size = 1023;
   cfg.pin_bck = DAC_BCK;
   cfg.pin_ws = DAC_WSEL;
   cfg.pin_data = DAC_DIN;
@@ -130,8 +130,8 @@ void setup() {
   // ---- Player ----
   player.setOnStreamChangeCallback(onTrackChange);
   player.setSilenceOnInactive(true);                // keep feeding zeros to the DAC while paused
-  player.setVolume(volume);  // 0.0 - 1.0
-  if (!player.begin()) {// starts with the first file on the card
+  player.setVolume(volume); // 0.0 - 1.0
+  if (!player.begin()) { // starts with the first file on the card
     Serial.println("Player start failed - no playable files in the root folder?");
     while (1)
       delay(1000);
@@ -139,7 +139,8 @@ void setup() {
 }
 
 void loop() {
-  player.copy(); // does the actual playing, must be called continuously
+  player.copy();  // does the actual playing, must be called continuously. 
+                  // NO EXCEPTIONS, this includes slow functions
 
   // Serial input commands
   if (Serial.available()) {
