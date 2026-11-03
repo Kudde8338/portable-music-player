@@ -1,4 +1,4 @@
-# Garn47's Portable Music Player 
+# Portable Music Player 
 
 A compact, self-contained MP3 player built around an **ESP32-C6** and Adafruit_PCM5122 DAC. File decoding and digital audio playback based on pschatzmann's `arduino audio tools` and the likes. 
 
@@ -43,4 +43,4 @@ The DAC can also be pinned to the I²C SDA and SCL pins for filtering, de-emphas
 1. **Assemble** – connect the components as stated in the [Pin Map](#pin-map).
 2. **Install and set up libraries** – add the pre-specified libraries. 
 3. **Flash** – open the project in the Arduino IDE (or PlatformIO), select the *ESP32C6 Dev Module* board, and upload. If you're using a different microcontroller; go through the proper channels to adjust the source code, pinouts, and flash method. 
-4. **Play** – insert an SD card formatted as **FAT32** with MP3 files in the root folder.
+4. **Play** – insert an SD card formatted as **FAT32** with MP3 files in the root folder. You can create custom playlist folders as well if so please, just note the path in the code. 
