@@ -1,14 +1,18 @@
-# Portable Music Player 
+# [Name here]
 
-A compact, self-contained MP3 player built around an **ESP32-C6** and Adafruit_PCM5122 DAC. File decoding and digital audio playback based on pschatzmann's `arduino audio tools` and the likes. 
+An independent project originally forked from [@TotallyGarn47](https://github.com/TotallyGarn47).<br>
+[The original project](https://github.com/TotallyGarn47/portable-music-player) and its contributors are credited for the work that served as the foundation for this project. See the original repository for its development history.
+
+
+## About
+A compact, self-contained MP3 player built around an **ESP32-D0WD-V3** and **Adafruit_PCM5122**. File decoding and digital audio playback based on pschatzmann's `arduino audio tools` and the likes. 
 
 ## Hardware
 
 | Component | Notes |
 |-----------|-------|
-| ESP32-C6-DEV-KIT-NX | Main computer |
+| ESP32-D0WD-V3 | Main computer |
 | Adafruit MicroSD SPI or SDIO Card Breakout Board | SD-card module for file storage. Supports up to 32 GB. |
-| 0.96" OLED Display | 128 × 64 px, I²C interface, white-on-black. |
 | Adafruit PCM5122 I2S DAC with Line Level Output - HW, I2C or SPI | Digital to audio conversion and output. |
 
 ## Software Dependencies
@@ -24,23 +28,14 @@ A compact, self-contained MP3 player built around an **ESP32-C6** and Adafruit_P
 
 | Function | GPIO |
 |----------|------|
-| I²C SDA (OLED) | 06 |
-| I²C SCL (OLED) | 07 |
-| CLK (MicroSD Breakout Board) | 00 |
-| SO (MicroSD Breakout Board) | 01 |
-| SI (MicroSD Breakout Board) | 10 |
-| CS (MicroSD Breakout Board) | 11 |
-| WSEL (PCM5122 I2S DAC) | 23 |
-| DIN (PCM5122 I2S DAC) | 22 |
-| BCK (PCM5122 I2S DAC) | 21 |
+| CLK (MicroSD Breakout Board) | 18 |
+| SO (MicroSD Breakout Board) | 19 |
+| SI (MicroSD Breakout Board) | 23 |
+| CS (MicroSD Breakout Board) | 05 |
+| WSEL (PCM5122 I2S DAC) | 25 |
+| DIN (PCM5122 I2S DAC) | 26 |
+| BCK (PCM5122 I2S DAC) | 27 |
 
 The DAC can also be pinned to the I²C SDA and SCL pins for filtering, de-emphasis, mute, as well as gain changes. To put into use, include the Adafruit_BusIO and Adafruit_PCM51xx libraries. See documentation [here](https://learn.adafruit.com/adafruit-pcm5122-i2s-dac/overview).
 
 **NOTE:** Both the OLED and the MicroSD Breakout Board use 3.3V power input! This is especially important since both components **CAN** and **WILL** break if a higher voltage is used!
-
-## Getting Started
-
-1. **Assemble** – connect the components as stated in the [Pin Map](#pin-map).
-2. **Install and set up libraries** – add the pre-specified libraries. 
-3. **Flash** – open the project in the Arduino IDE (or PlatformIO), select the *ESP32C6 Dev Module* board, and upload. If you're using a different microcontroller; go through the proper channels to adjust the source code, pinouts, and flash method. 
-4. **Play** – insert an SD card formatted as **FAT32** with MP3 files in the root folder. You can create custom playlist folders as well if so please, just note the path in the code. 
