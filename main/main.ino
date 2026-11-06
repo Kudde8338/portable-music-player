@@ -49,7 +49,6 @@ enum AudioCommand {
   CMD_VOLUME_DOWN
 };
 
-
 QueueHandle_t audioQueue;
 
 void setup() {
