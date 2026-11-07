@@ -38,7 +38,9 @@ AudioSourceSD source("/music", "", SD_CS, SPI);
 // source -> multi decoder -> i2s (volume and fade stages are built in)
 AudioPlayer player(source, i2s, multi);
 
-float volume = 1.0;
+float volume = 0.5;
+int trackCount = 0;
+volatile bool userPaused = false;
 
 enum AudioCommand {
   CMD_PLAY,
@@ -63,6 +65,8 @@ void setup() {
     while (1)
       delay(1000);
   }
+  trackCount = countTracks("/music");
+  Serial.printf("Number of songs: %d\n", trackCount);
 
   // ---- I2S output ----
   auto cfg = i2s.defaultConfig(TX_MODE);
@@ -115,19 +119,31 @@ void audioTask(void *parameter) {
     while (xQueueReceive(audioQueue, &command, 0) == pdTRUE) {
       switch (command) {
         case CMD_PLAY:
+        userPaused = false;
           player.setActive(true);
           break;
 
         case CMD_PAUSE:
+          userPaused = true;
           player.setActive(false);
           break;
 
         case CMD_NEXT:
-          player.next();
+          if (source.index() == trackCount - 1) {
+            player.setIndex(0);
+          } else {
+            player.next();
+          }
+          player.setActive(true);
           break;
 
         case CMD_PREVIOUS:
-          player.previous();
+          if (source.index() == 0) {
+            player.setIndex(trackCount - 1);
+          } else {
+            player.previous();
+          }
+          player.setActive(true);
           break;
 
         case CMD_VOLUME_UP:
@@ -143,6 +159,11 @@ void audioTask(void *parameter) {
     }
 
     player.copy();
+    if (!player.isActive() && !userPaused && trackCount > 0) {
+      player.setIndex(0);
+      userPaused = true;
+      player.setActive(false);
+    }
     taskYIELD();
   }
 }
@@ -188,3 +209,18 @@ void controlTask(void *parameter) {
     vTaskDelay(pdMS_TO_TICKS(10));
   }
 }
+
+int countTracks(const char *path) {
+  int n = 0;
+  File dir = SD.open(path);
+  if (!dir) return 0;
+  for (File f = dir.openNextFile(); f; f= dir.openNextFile()) {
+    if (!f.isDirectory() && f.name()[0] != '.') n++;
+  }
+  dir.close();
+  return n;
+}
+
+
+
+
