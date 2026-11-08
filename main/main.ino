@@ -66,23 +66,26 @@ void setup() {
   Serial.begin(115200);
   delay(1000);
 
+  // ---- SD card ----
+  SPI.begin(SD_CLK, SD_SO, SD_SI, SD_CS);
+
+  while (!SD.begin(SD_CS, SPI, 40000000)) {  // Mounted here at 40 MHz.
+    Serial.println("SD init failed - check wiring / card format (FAT32)");
+    Serial.println("Trying again in 5 seconds");
+    delay(5000);
+  }
+  trackCount = countTracks("/music");
+  Serial.printf("Number of songs: %d\n", trackCount);
+
+  delay(1000);
+
+  // ---- Buttons ----
   pinMode(BUTTON_PLAY, INPUT_PULLUP);
   pinMode(BUTTON_PAUSE, INPUT_PULLUP);
   pinMode(BUTTON_NEXT, INPUT_PULLUP);
   pinMode(BUTTON_PREVIOUS, INPUT_PULLUP);
   pinMode(BUTTON_VOLUME_UP, INPUT_PULLUP);
   pinMode(BUTTON_VOLUME_DOWN, INPUT_PULLUP);
-
-  // ---- SD card ----
-  SPI.begin(SD_CLK, SD_SO, SD_SI, SD_CS);
-
-  if (!SD.begin(SD_CS, SPI, 40000000)) {  // Mounted here at 40 MHz.
-    Serial.println("SD init failed - check wiring / card format (FAT32)");
-    while (1)
-      delay(1000);
-  }
-  trackCount = countTracks("/music");
-  Serial.printf("Number of songs: %d\n", trackCount);
 
   // ---- I2S output ----
   auto cfg = i2s.defaultConfig(TX_MODE);
