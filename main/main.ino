@@ -25,8 +25,7 @@
 #define DAC_MCK -1
 
 // -------- Buttons --------
-#define BUTTON_PLAY 13
-#define BUTTON_PAUSE 17
+#define BUTTON_PLAYBACK 13
 #define BUTTON_NEXT 14
 #define BUTTON_PREVIOUS 32
 #define BUTTON_VOLUME_UP 33
@@ -52,8 +51,7 @@ int trackCount = 0;
 volatile bool userPaused = false;
 
 enum AudioCommand {
-  CMD_PLAY,
-  CMD_PAUSE,
+  CMD_PLAYBACK,
   CMD_NEXT,
   CMD_PREVIOUS,
   CMD_VOLUME_UP,
@@ -80,8 +78,7 @@ void setup() {
   delay(1000);
 
   // ---- Buttons ----
-  pinMode(BUTTON_PLAY, INPUT_PULLUP);
-  pinMode(BUTTON_PAUSE, INPUT_PULLUP);
+  pinMode(BUTTON_PLAYBACK, INPUT_PULLUP);
   pinMode(BUTTON_NEXT, INPUT_PULLUP);
   pinMode(BUTTON_PREVIOUS, INPUT_PULLUP);
   pinMode(BUTTON_VOLUME_UP, INPUT_PULLUP);
@@ -137,14 +134,14 @@ void audioTask(void *parameter) {
   while (true) {
     while (xQueueReceive(audioQueue, &command, 0) == pdTRUE) {
       switch (command) {
-        case CMD_PLAY:
-          userPaused = false;
-          player.setActive(true);
-          break;
-
-        case CMD_PAUSE:
-          userPaused = true;
-          player.setActive(false);
+        case CMD_PLAYBACK:
+          if (player.isActive()) {
+            player.setActive(false);
+            userPaused = true;
+          } else {
+            player.setActive(true);
+            userPaused = false;
+          }
           break;
 
         case CMD_NEXT:
@@ -190,13 +187,10 @@ void audioTask(void *parameter) {
 }
 
 void controlTask(void *parameter) {
-  bool lastPlay = false, lastPause = false, lastNext = false, lastPrevious = false, lastVolumeUp = false, lastVolumeDown = false;
+  bool lastPlayback = false, lastNext = false, lastPrevious = false, lastVolumeUp = false, lastVolumeDown = false;
   while (true) {
-    if (pressed(BUTTON_PLAY, lastPlay)) {
-      sendCmd(CMD_PLAY);
-    }
-    if (pressed(BUTTON_PAUSE, lastPause)) {
-      sendCmd(CMD_PAUSE);
+    if (pressed(BUTTON_PLAYBACK, lastPlayback)) {
+      sendCmd(CMD_PLAYBACK);
     }
     if (pressed(BUTTON_NEXT, lastNext)) {
       sendCmd(CMD_NEXT);
