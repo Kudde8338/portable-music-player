@@ -4,6 +4,7 @@
 #include <SPI.h>
 
 // -------- Audiotools --------
+
 #include "AudioTools.h"                             // Decoder handler
 #include "AudioTools/AudioCodecs/CodecFLACFoxen.h"  // FLAC codec (Foxen)
 #include "AudioTools/AudioCodecs/CodecMP3Helix.h"   // MP3 codec
@@ -22,6 +23,14 @@
 #define DAC_DIN 26
 #define DAC_BCK 27
 #define DAC_MCK -1
+
+// -------- Buttons --------
+#define BUTTON_PLAY 13
+#define BUTTON_PAUSE 17
+#define BUTTON_NEXT 14
+#define BUTTON_PREVIOUS 32
+#define BUTTON_VOLUME_UP 33
+#define BUTTON_VOLUME_DOWN 16
 
 // -------- Decoder definitions --------
 I2SStream i2s;          // final output to the DAC
@@ -56,6 +65,13 @@ QueueHandle_t audioQueue;
 void setup() {
   Serial.begin(115200);
   delay(1000);
+
+  pinMode(BUTTON_PLAY, INPUT_PULLUP);
+  pinMode(BUTTON_PAUSE, INPUT_PULLUP);
+  pinMode(BUTTON_NEXT, INPUT_PULLUP);
+  pinMode(BUTTON_PREVIOUS, INPUT_PULLUP);
+  pinMode(BUTTON_VOLUME_UP, INPUT_PULLUP);
+  pinMode(BUTTON_VOLUME_DOWN, INPUT_PULLUP);
 
   // ---- SD card ----
   SPI.begin(SD_CLK, SD_SO, SD_SI, SD_CS);
@@ -119,7 +135,7 @@ void audioTask(void *parameter) {
     while (xQueueReceive(audioQueue, &command, 0) == pdTRUE) {
       switch (command) {
         case CMD_PLAY:
-        userPaused = false;
+          userPaused = false;
           player.setActive(true);
           break;
 
@@ -129,6 +145,7 @@ void audioTask(void *parameter) {
           break;
 
         case CMD_NEXT:
+          userPaused = false;
           if (source.index() == trackCount - 1) {
             player.setIndex(0);
           } else {
@@ -138,6 +155,7 @@ void audioTask(void *parameter) {
           break;
 
         case CMD_PREVIOUS:
+          userPaused = false;
           if (source.index() == 0) {
             player.setIndex(trackCount - 1);
           } else {
@@ -169,42 +187,25 @@ void audioTask(void *parameter) {
 }
 
 void controlTask(void *parameter) {
+  bool lastPlay = false, lastPause = false, lastNext = false, lastPrevious = false, lastVolumeUp = false, lastVolumeDown = false;
   while (true) {
-    if (Serial.available()) {
-
-      AudioCommand command;
-      bool validCommand = true;
-
-      switch (Serial.read()) {
-        default:
-          validCommand = false;
-          break;
-          
-        case 'p':
-          command = CMD_PLAY;
-          break;  // resume
-        case 's':
-          command = CMD_PAUSE;
-          break;  // pause
-        case 'n':
-          command = CMD_NEXT;
-          break;  // next track
-        case 'b':
-          command = CMD_PREVIOUS;
-          break;  // previous track
-        case '+':
-          command = CMD_VOLUME_UP;
-          break;
-        case '-':
-          command = CMD_VOLUME_DOWN;
-          break;
-      }
-
-      if (validCommand) {
-        if (xQueueSend(audioQueue, &command, 0) != pdTRUE) {
-          Serial.println("Queue is full. Couldn't send command!");
-        }
-      }
+    if (pressed(BUTTON_PLAY, lastPlay)) {
+      sendCmd(CMD_PLAY);
+    }
+    if (pressed(BUTTON_PAUSE, lastPause)) {
+      sendCmd(CMD_PAUSE);
+    }
+    if (pressed(BUTTON_NEXT, lastNext)) {
+      sendCmd(CMD_NEXT);
+    }
+    if (pressed(BUTTON_PREVIOUS, lastPrevious)) {
+      sendCmd(CMD_PREVIOUS);
+    }
+    if (pressed(BUTTON_VOLUME_UP, lastVolumeUp)) {
+      sendCmd(CMD_VOLUME_UP);
+    }
+    if (pressed(BUTTON_VOLUME_DOWN, lastVolumeDown)) {
+      sendCmd(CMD_VOLUME_DOWN);
     }
     vTaskDelay(pdMS_TO_TICKS(10));
   }
@@ -214,13 +215,22 @@ int countTracks(const char *path) {
   int n = 0;
   File dir = SD.open(path);
   if (!dir) return 0;
-  for (File f = dir.openNextFile(); f; f= dir.openNextFile()) {
+  for (File f = dir.openNextFile(); f; f = dir.openNextFile()) {
     if (!f.isDirectory() && f.name()[0] != '.') n++;
   }
   dir.close();
   return n;
 }
 
+bool pressed(int pin, bool &last) {
+  bool now = digitalRead(pin) == LOW;
+  bool edge = now && !last;
+  last = now;
+  return edge;
+}
 
-
-
+void sendCmd(AudioCommand c) {
+  if (xQueueSend(audioQueue, &c, 0) != pdTRUE) {
+    Serial.println("Queue is full. Couldn't send command!");
+  }
+}
